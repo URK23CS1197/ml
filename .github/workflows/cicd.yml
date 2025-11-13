@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: ci/cd pipeline
 on: [push]
 
 jobs:
@@ -6,44 +6,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout File
       uses: actions/checkout@v4
-
+    
     - name: Setup python
       uses: actions/setup-python@v4
-      with:
+      with: 
         python-version: 3.9
 
-    - name: Install dependicies
+    - name: install dependicies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Train model
+    - name: train model
       run: python random_fr.py
 
-    - name: Upload artifact model
+    - name: upload artifact model
       uses: actions/upload-artifact@v4
       with:
         name: model-artifact
-        path: random_forest_model.pkl
+        path: random_forest.pkl
 
   deploy:
     needs: train
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkoutfiles
       uses: actions/checkout@v4
-
-    - name: Download artifact
+    
+    - name: download artifact
       uses: actions/download-artifact@v4
       with:
         name: model-artifact
         path: .
-
-    - name: Build docker image
+    - name: Docker image build
       run: docker build -t ml-flask-app .
-
-    - name: Deploy Docker Container
+    - name: run docker cointainer
       run: docker run -d -p 5000:5000 --name ml-container ml-flask-app
+     
